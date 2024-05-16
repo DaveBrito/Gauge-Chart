@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
     Range Rango_1, Rango_2, Rango_3;
     int SetearGrafica = 0;
 
-    private int initialValue = 50;
     private MqttClient arduinoClient;
     private static final String ARDUINO_MQTT_TOPIC = "mqttHQ-client-testt"; // Tópico MQTT para o dispositivo Arduino
 
@@ -40,18 +39,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Define o comportamento ao aplicar insets à view
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        // Conecta-se ao broker MQTT
         connectToMqttBroker();
 
+        // Inicializa os botões e o medidor
         idBtnSubir = findViewById(R.id.idBtnSubir);
         idBtnBaixar = findViewById(R.id.idBtnBaixar);
         idMedidor = findViewById(R.id.idMedidor);
 
+        // Define os intervalos do medidor
         Rango_1 = new Range();
         Rango_2 = new Range();
         Rango_3 = new Range();
@@ -63,17 +67,22 @@ public class MainActivity extends AppCompatActivity {
         Rango_3.setFrom(150);
         Rango_3.setTo(200);
 
+        // Define as cores dos intervalos
         Rango_1.setColor(Color.GREEN);
         Rango_2.setColor(Color.BLUE);
         Rango_3.setColor(Color.RED);
+
+        // Define os valores mínimo e máximo do medidor e o valor inicial
         idMedidor.setMinValue(0);
         idMedidor.setMaxValue(200);
-        idMedidor.setValue(initialValue);
+        idMedidor.setValue(50);
 
+        // Adiciona os intervalos ao medidor
         idMedidor.addRange(Rango_1);
         idMedidor.addRange(Rango_2);
         idMedidor.addRange(Rango_3);
 
+        // Define o comportamento do botão de aumentar
         idBtnSubir.setOnClickListener(v -> {
             SetearGrafica += 10;
             if (SetearGrafica > 200) {
@@ -81,10 +90,11 @@ public class MainActivity extends AppCompatActivity {
             }
             idMedidor.setValue(SetearGrafica);
 
-            // Enviar a mensagem para o tópico MQTT
+            // Envia a mensagem para o tópico MQTT
             enviarMensagemMQTT(String.valueOf(SetearGrafica));
         });
 
+        // Define o comportamento do botão de diminuir
         idBtnBaixar.setOnClickListener(v -> {
             SetearGrafica -= 10;
             if (SetearGrafica < 0) {
@@ -92,17 +102,18 @@ public class MainActivity extends AppCompatActivity {
             }
             idMedidor.setValue(SetearGrafica);
 
-            // Enviar a mensagem para o tópico MQTT
+            // Envia a mensagem para o tópico MQTT
             enviarMensagemMQTT(String.valueOf(SetearGrafica));
         });
     }
 
+    // Método para conectar ao broker MQTT
     private void connectToMqttBroker() {
         try {
             Log.d(TAG, "Tentando se conectar ao broker MQTT...");
             String brokerUrl = "tcp://public.mqtthq.com:1883";
             String clientId = MqttClient.generateClientId();
-            arduinoClient = new MqttClient(brokerUrl, clientId);
+            arduinoClient = new MqttClient(brokerUrl, clientId, null);
             MqttConnectOptions options = new MqttConnectOptions();
             options.setCleanSession(true);
             arduinoClient.connect(options);
@@ -133,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Método para enviar mensagem para o broker MQTT
     private void enviarMensagemMQTT(String mensagem) {
         try {
             if (arduinoClient != null && arduinoClient.isConnected()) {
