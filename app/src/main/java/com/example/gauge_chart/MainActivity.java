@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     int SetearGrafica;
 
     private MqttClient arduinoClient;
-    private static final String ARDUINO_MQTT_TOPIC = "mqttHQ-client-testtt"; // Tópico MQTT para o dispositivo Arduino
+    private static final String ARDUINO_MQTT_TOPIC = "mqttHQ-client-testt"; // Tópico MQTT para o dispositivo Arduino
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void connectToMqttBroker() {
         try {
-            arduinoClient = new MqttClient("tcp://public.mqtthq.com:1883", MqttClient.generateClientId());
+            String clientId = MqttClient.generateClientId();
+           arduinoClient = new MqttClient("tcp://public.mqtthq.com:1883", clientId);
             arduinoClient.connect();
             // Subscribe to the topic
             arduinoClient.subscribe(ARDUINO_MQTT_TOPIC);
