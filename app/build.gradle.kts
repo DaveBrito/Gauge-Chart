@@ -32,6 +32,8 @@ android {
 }
 
 dependencies {
+    //Implementado dependências do repositório
+    implementation ("com.github.Gruzer:simple-gauge-android:0.3.1")
 
     implementation(libs.appcompat)
     implementation(libs.material)
