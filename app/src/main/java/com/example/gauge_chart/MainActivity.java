@@ -12,15 +12,19 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.ekn.gruzer.gaugelibrary.HalfGauge;
+import com.ekn.gruzer.gaugelibrary.Range;
+
+import org.eclipse.paho.client.mqttv3.MqttClient;
 
 public class MainActivity extends AppCompatActivity {
 
-
     Button idBtnSubir, idBtnBaixar;
     HalfGauge idMedidor;
-     com.ekn.gruzer.gaugelibrary.Range Rango_1, Rango_2,Rango_3;
-     int SetearGrafica;
+    Range Rango_1, Rango_2, Rango_3;
+    int SetearGrafica;
 
+    private MqttClient arduinoClient;
+    private static final String ARDUINO_MQTT_TOPIC = "mqttHQ-client-testtt"; // Tópico MQTT para o dispositivo Arduino
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,18 +37,20 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-
         idBtnSubir = findViewById(R.id.idBtnSubir);
         idBtnBaixar = findViewById(R.id.idBtnBaixar);
         idMedidor = findViewById(R.id.idMedidor);
 
-        Rango_1 = new com.ekn.gruzer.gaugelibrary.Range();
-        Rango_2 = new com.ekn.gruzer.gaugelibrary.Range();
-        Rango_3 = new com.ekn.gruzer.gaugelibrary.Range();
+        Rango_1 = new Range();
+        Rango_2 = new Range();
+        Rango_3 = new Range();
 
-        Rango_1.setFrom(0);Rango_1.setTo(100);
-        Rango_2.setFrom(100);Rango_2.setTo(150);
-        Rango_3.setFrom(150);Rango_3.setTo(200);
+        Rango_1.setFrom(0);
+        Rango_1.setTo(100);
+        Rango_2.setFrom(100);
+        Rango_2.setTo(150);
+        Rango_3.setFrom(150);
+        Rango_3.setTo(200);
 
         Rango_1.setColor(Color.GREEN);
         Rango_2.setColor(Color.BLUE);
@@ -60,18 +66,21 @@ public class MainActivity extends AppCompatActivity {
         idBtnSubir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SetearGrafica = SetearGrafica +10;
-                if (SetearGrafica>200){SetearGrafica=200;}
+                SetearGrafica = SetearGrafica + 10;
+                if (SetearGrafica > 200) {
+                    SetearGrafica = 200;
+                }
                 idMedidor.setValue(SetearGrafica);
             }
         });
 
-
         idBtnBaixar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SetearGrafica = SetearGrafica -10;
-                if (SetearGrafica<0){SetearGrafica=0;}
+                SetearGrafica = SetearGrafica - 10;
+                if (SetearGrafica < 0) {
+                    SetearGrafica = 0;
+                }
                 idMedidor.setValue(SetearGrafica);
             }
         });
@@ -82,5 +91,18 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        connectToMqttBroker();
+    }
+
+    private void connectToMqttBroker() {
+        try {
+            arduinoClient = new MqttClient("tcp://public.mqtthq.com:1883", MqttClient.generateClientId());
+            arduinoClient.connect();
+            // Subscribe to the topic
+            arduinoClient.subscribe(ARDUINO_MQTT_TOPIC);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

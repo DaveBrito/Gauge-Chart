@@ -34,6 +34,9 @@ android {
 dependencies {
     //Implementado dependências do repositório
     implementation ("com.github.Gruzer:simple-gauge-android:0.3.1")
+    //Implementação do MQTT para o projeto.
+    implementation ("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
+
 
     implementation(libs.appcompat)
     implementation(libs.material)
