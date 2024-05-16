@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     Range Rango_1, Rango_2, Rango_3;
     int SetearGrafica = 0;
 
+    private int initialValue = 50;
     private MqttClient arduinoClient;
     private static final String ARDUINO_MQTT_TOPIC = "mqttHQ-client-testt"; // Tópico MQTT para o dispositivo Arduino
 
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         Rango_3.setColor(Color.RED);
         idMedidor.setMinValue(0);
         idMedidor.setMaxValue(200);
-        idMedidor.setValue(0);
+        idMedidor.setValue(initialValue);
 
         idMedidor.addRange(Rango_1);
         idMedidor.addRange(Rango_2);
