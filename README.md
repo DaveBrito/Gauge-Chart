@@ -27,6 +27,9 @@
 - Interaja com os botões para aumentar ou diminuir o valor do medidor e observe as mudanças nas cores das regiões.
 
 ## Testes e Resultado Esperado
+- Clique para ser direcionado para o video hospedado no YT.
+
+
 [![Clique para assistir ao vídeo](https://img.youtube.com/vi/WuYLo8bGXR0/0.jpg)](https://www.youtube.com/watch?v=WuYLo8bGXR0)
 
 
